@@ -1,0 +1,22 @@
+meta {
+  name: Get Role By Id
+  type: http
+  seq: 6
+}
+
+get {
+  url: http://localhost:8000/api/roles/3d16cda4-20a5-4dad-bceb-0163e52c1360
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Administrator"
+  },
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

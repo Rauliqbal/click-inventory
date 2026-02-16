@@ -3,17 +3,18 @@ package com.vensys.click_inventory.services;
 import com.vensys.click_inventory.DTO.RoleRequest;
 import com.vensys.click_inventory.entity.Roles;
 import com.vensys.click_inventory.repositories.RoleRepository;
-import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 @Service
 public class RoleService {
@@ -41,7 +42,14 @@ public class RoleService {
     roleRepository.save(role);
   }
 
+  @Transactional(readOnly = true)
   public List<Roles> findAll(){
     return roleRepository.findAll();
+  }
+
+  @Transactional(readOnly = true)
+  public Roles findById(UUID id) {
+    return roleRepository.findById(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role not found!"));
   }
 }
