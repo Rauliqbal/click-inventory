@@ -4,6 +4,7 @@ import com.vensys.click_inventory.DTO.RoleRequest;
 import com.vensys.click_inventory.DTO.RoleResponse;
 import com.vensys.click_inventory.entity.Roles;
 import com.vensys.click_inventory.repositories.RoleRepository;
+import com.vensys.click_inventory.repositories.UserRepository;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
@@ -21,6 +22,9 @@ import java.util.UUID;
 public class RoleService {
   @Autowired
   private RoleRepository roleRepository;
+
+  @Autowired
+  private UserRepository userRepository;
 
   @Autowired
   private Validator validator;
@@ -62,10 +66,10 @@ public class RoleService {
     }
 
     Roles role = roleRepository.findById(id)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role tidak ditemukan"));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role not found"));
 
     if (roleRepository.existsByNameAndIdNot(request.getName(), id)) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Nama role sudah digunakan");
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "role name is already in use");
     }
 
     role.setName(request.getName());
@@ -77,6 +81,19 @@ public class RoleService {
   }
 
   @Transactional
+  public RoleResponse delete(UUID id){
+    Roles role = roleRepository.findById(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role not found"));
 
+    if(userRepository.existsByRole(role)){
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The role cannot be deleted because it is still in use by the user");
+    }
+
+    roleRepository.delete(role);
+
+    return RoleResponse.builder()
+            .name(role.getName())
+            .build();
+  }
 }
 

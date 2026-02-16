@@ -72,4 +72,17 @@ public class RoleController {
             .data(response)
             .build();
   }
+
+  @DeleteMapping(
+          path = "/{id}",
+          produces = MediaType.APPLICATION_JSON_VALUE
+  )
+  public WebResponse<RoleResponse> delete(@PathVariable("id") UUID id){
+    RoleResponse response = roleService.delete(id);
+
+    return WebResponse.<RoleResponse>builder()
+            .success(true)
+            .message("Delete " + response.getName() + " Successfully!")
+            .build();
+  }
 }
