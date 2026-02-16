@@ -25,6 +25,6 @@ CREATE TABLE users (
     role_id UUID REFERENCES roles(id),
     fullname VARCHAR(100) NOT NULL,
     username VARCHAR(100) UNIQUE NOT NULL,
-    password VARCHAR(255    ) UNIQUE NOT NULL,
-    email VARCHAR(100) NOT NULL,
-)
+    password VARCHAR(255) UNIQUE NOT NULL,
+    email VARCHAR(100) NOT NULL
+);

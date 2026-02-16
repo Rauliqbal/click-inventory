@@ -30,7 +30,7 @@ public class UserController {
                 .username(user.getUsername())
                 .fullname(user.getFullname())
                 .email(user.getEmail())
-                .roleName(user.getRole().getName())
+                .role(user.getRole().getName())
                 .build();
 
         return WebResponse.<UserResponse>builder()

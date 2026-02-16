@@ -2,14 +2,14 @@ package com.vensys.click_inventory.controller;
 
 import com.vensys.click_inventory.DTO.RoleRequest;
 import com.vensys.click_inventory.DTO.WebResponse;
+import com.vensys.click_inventory.entity.Roles;
 import com.vensys.click_inventory.services.RoleService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -28,6 +28,17 @@ public class RoleController {
     return WebResponse.<String>builder()
             .success(true)
             .message("Create Role Success")
+            .build();
+  }
+
+  @GetMapping(path = "/roles",produces = MediaType.APPLICATION_JSON_VALUE)
+  public WebResponse<List<Roles>> getAll() {
+    List<Roles> roles = roleService.findAll();
+
+    return WebResponse.<List<Roles>>builder()
+            .success(true)
+            .message("List all Role!")
+            .data(roles)
             .build();
   }
 }
