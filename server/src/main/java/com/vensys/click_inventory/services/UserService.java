@@ -5,7 +5,6 @@ import com.vensys.click_inventory.entity.Users;
 import com.vensys.click_inventory.DTO.RegisterUserRequest;
 import com.vensys.click_inventory.repositories.RoleRepository;
 import com.vensys.click_inventory.repositories.UserRepository;
-import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
@@ -13,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Set;
@@ -42,7 +42,7 @@ public class UserService {
     }
 
     Roles role = roleRepository.findByName(request.getRole())
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Role " +request.getRole() + " not found"));
 
     System.out.println("Role ditemukan: " + role.getName() + " dengan ID: " + role.getId());
 

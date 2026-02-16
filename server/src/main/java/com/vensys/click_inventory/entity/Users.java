@@ -23,7 +23,6 @@ public class Users {
   @UuidGenerator
   private UUID id;
 
-
   @NotBlank
   @Size(max = 100)
   private String username;
