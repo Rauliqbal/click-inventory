@@ -1,0 +1,26 @@
+meta {
+  name: Register User
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:8000/api/user
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "username": "Raul iqbal",
+    "fullname": "rauliqbal",
+    "email": "raul.iqbal@vensys.co.id",
+    "password": "password",
+    "role": "Administrator"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
