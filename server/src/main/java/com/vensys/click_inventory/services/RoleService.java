@@ -55,7 +55,7 @@ public class RoleService {
   }
 
   @Transactional
-  public RoleResponse update(RoleResponse request, UUID id) {
+  public RoleResponse update(UUID id,RoleRequest request) {
     Set<ConstraintViolation<RoleRequest>> constraintViolations = validator.validate(request);
     if (!constraintViolations.isEmpty()) {
       throw new ConstraintViolationException(constraintViolations);
@@ -75,5 +75,8 @@ public class RoleService {
             .name(role.getName())
             .build();
   }
+
+  @Transactional
+
 }
 

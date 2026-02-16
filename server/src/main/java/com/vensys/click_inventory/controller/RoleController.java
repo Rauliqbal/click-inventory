@@ -18,9 +18,8 @@ import java.util.UUID;
 public class RoleController {
   @Autowired
   private RoleService roleService;
-  
-  @PostMapping(
 
+  @PostMapping(
           consumes = MediaType.APPLICATION_JSON_VALUE,
           produces = MediaType.APPLICATION_JSON_VALUE
   )
@@ -55,6 +54,21 @@ public class RoleController {
     return WebResponse.<RoleResponse>builder()
             .success(true)
             .message("Get Role By ID: " + id)
+            .data(response)
+            .build();
+  }
+
+  @PutMapping(
+          path = "/{id}",
+          consumes = MediaType.APPLICATION_JSON_VALUE,
+          produces = MediaType.APPLICATION_JSON_VALUE
+  )
+  public WebResponse<RoleResponse> update(@PathVariable("id") UUID id, @RequestBody RoleRequest request) {
+    RoleResponse response = roleService.update(id, request);
+
+    return WebResponse.<RoleResponse>builder()
+            .success(true)
+            .message("Update " + response.getName() + " Successfully!")
             .data(response)
             .build();
   }
