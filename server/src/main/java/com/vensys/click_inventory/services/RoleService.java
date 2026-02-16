@@ -1,6 +1,7 @@
 package com.vensys.click_inventory.services;
 
 import com.vensys.click_inventory.DTO.RoleRequest;
+import com.vensys.click_inventory.DTO.RoleResponse;
 import com.vensys.click_inventory.entity.Roles;
 import com.vensys.click_inventory.repositories.RoleRepository;
 import jakarta.validation.ConstraintViolation;
@@ -25,14 +26,14 @@ public class RoleService {
   private Validator validator;
 
   @Transactional
-  public void create(RoleRequest request){
+  public void create(RoleRequest request) {
     Set<ConstraintViolation<RoleRequest>> constraintViolations = validator.validate(request);
 
-    if(!constraintViolations.isEmpty()) {
+    if (!constraintViolations.isEmpty()) {
       throw new ConstraintViolationException(constraintViolations);
     }
 
-    if(roleRepository.existsByName(request.getName())){
+    if (roleRepository.existsByName(request.getName())) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Name udah ada");
     }
 
@@ -43,7 +44,7 @@ public class RoleService {
   }
 
   @Transactional(readOnly = true)
-  public List<Roles> findAll(){
+  public List<Roles> findAll() {
     return roleRepository.findAll();
   }
 
@@ -52,4 +53,27 @@ public class RoleService {
     return roleRepository.findById(id)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role not found!"));
   }
+
+  @Transactional
+  public RoleResponse update(RoleResponse request, UUID id) {
+    Set<ConstraintViolation<RoleRequest>> constraintViolations = validator.validate(request);
+    if (!constraintViolations.isEmpty()) {
+      throw new ConstraintViolationException(constraintViolations);
+    }
+
+    Roles role = roleRepository.findById(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role tidak ditemukan"));
+
+    if (roleRepository.existsByNameAndIdNot(request.getName(), id)) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Nama role sudah digunakan");
+    }
+
+    role.setName(request.getName());
+    roleRepository.save(role);
+
+    return RoleResponse.builder()
+            .name(role.getName())
+            .build();
+  }
 }
+
