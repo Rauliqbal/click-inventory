@@ -2,7 +2,7 @@ package com.vensys.click_inventory.services;
 
 import com.vensys.click_inventory.entity.Roles;
 import com.vensys.click_inventory.entity.Users;
-import com.vensys.click_inventory.model.RegisterUserRequest;
+import com.vensys.click_inventory.DTO.RegisterUserRequest;
 import com.vensys.click_inventory.repositories.RoleRepository;
 import com.vensys.click_inventory.repositories.UserRepository;
 import jakarta.transaction.Transactional;
@@ -30,7 +30,7 @@ public class UserService {
   private Validator validator;
 
   @Transactional
-  public void register(RegisterUserRequest request) {
+  public Users register(RegisterUserRequest request) {
     Set<ConstraintViolation<RegisterUserRequest>> constraintViolations = validator.validate(request);
 
     if (!constraintViolations.isEmpty()) {
@@ -44,6 +44,7 @@ public class UserService {
     Roles role = roleRepository.findByName(request.getRole())
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
+    System.out.println("Role ditemukan: " + role.getName() + " dengan ID: " + role.getId());
 
     Users user = new Users();
     user.setUsername(request.getUsername());
@@ -53,6 +54,9 @@ public class UserService {
     user.setRole(role);
 
     userRepository.save(user);
+    return user;
   }
+
+
 
 }

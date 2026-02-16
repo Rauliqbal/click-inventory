@@ -19,28 +19,28 @@ import java.util.UUID;
 @Table(name = "users")
 
 public class Users {
-    @Id
-    @UuidGenerator
-    private UUID id;
+  @Id
+  @UuidGenerator
+  private UUID id;
 
 
-    @NotBlank
-    @Size(max = 100)
-    private String username;
+  @NotBlank
+  @Size(max = 100)
+  private String username;
 
-    @NotBlank
-    @Size(max = 100)
-    private String fullname;
-    
-    @NotBlank
-    @Size(max = 100)
-    private String email;
+  @NotBlank
+  @Size(max = 100)
+  private String fullname;
 
-    @ManyToOne
-    @JoinColumn(name = "role_id")
-    private Roles role;
+  @NotBlank
+  @Size(max = 100)
+  private String email;
 
-    @NotBlank
-    @Size(max = 100)
-    private String password;
+  @ManyToOne
+  @JoinColumn(name = "role")
+  private Roles role;
+
+  @NotBlank
+  @Size(max = 100)
+  private String password;
 }

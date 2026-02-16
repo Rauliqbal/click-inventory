@@ -1,5 +1,6 @@
-package com.vensys.click_inventory.model;
+package com.vensys.click_inventory.DTO;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,8 +10,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class WebResponse<T> {
+    private boolean success;
+    private String message;
     private T data;
-
     private String errors;
 }

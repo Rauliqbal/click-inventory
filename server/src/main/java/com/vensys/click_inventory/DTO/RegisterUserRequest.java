@@ -1,5 +1,6 @@
-package com.vensys.click_inventory.model;
+package com.vensys.click_inventory.DTO;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -12,22 +13,23 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class RegisterUserRequest {
-    @NotBlank
+    @NotBlank(message = "username is required")
     @Size(max = 100)
     private String username;
 
-    @NotBlank
+    @NotBlank(message = "fullname is required")
     @Size(max = 100)
     private String fullname;
 
-    @NotBlank
-    @Size(max = 255)
+    @NotBlank(message = "password is required")
+    @Size(min = 8, max = 255, message = "password must be at least 8 characters")
     private String password;
 
-    @NotBlank
+    @NotBlank(message = "email is required")
+    @Email(message = "invalid email format")
     @Size(max = 100)
     private String email;
 
-    @NotBlank
+    @NotBlank(message = "role is required")
     private String role;
 }

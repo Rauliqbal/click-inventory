@@ -1,7 +1,9 @@
 package com.vensys.click_inventory.controller;
 
-import com.vensys.click_inventory.model.RegisterUserRequest;
-import com.vensys.click_inventory.model.WebResponse;
+import com.vensys.click_inventory.DTO.RegisterUserRequest;
+import com.vensys.click_inventory.DTO.UserResponse;
+import com.vensys.click_inventory.DTO.WebResponse;
+import com.vensys.click_inventory.entity.Users;
 import com.vensys.click_inventory.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -21,9 +23,20 @@ public class UserController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public WebResponse<String> register(@RequestBody RegisterUserRequest request) {
-        userService.register(request);
+    public WebResponse<UserResponse> register(@RequestBody RegisterUserRequest request) {
+        Users user = userService.register(request);
 
-        return WebResponse.<String>builder().data("OKE").build();
+        UserResponse response = UserResponse.builder()
+                .username(user.getUsername())
+                .fullname(user.getFullname())
+                .email(user.getEmail())
+                .roleName(user.getRole().getName())
+                .build();
+
+        return WebResponse.<UserResponse>builder()
+                .success(true)
+                .message("Register Success")
+                .data(response)
+                .build();
     }
 }
