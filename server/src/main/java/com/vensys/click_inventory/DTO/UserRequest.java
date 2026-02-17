@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class RegisterUserRequest {
+public class UserRequest {
     @NotBlank(message = "username is required")
     @Size(max = 100)
     private String username;

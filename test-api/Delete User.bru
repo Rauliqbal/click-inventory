@@ -1,0 +1,16 @@
+meta {
+  name: Delete User
+  type: http
+  seq: 5
+}
+
+delete {
+  url: http://localhost:8000/api/user/a413de58-40bf-462a-83dd-ff04f8cd3b34
+  body: json
+  auth: none
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

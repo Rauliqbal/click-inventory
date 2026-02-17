@@ -58,6 +58,7 @@ public class RoleController {
             .build();
   }
 
+  //  UPDATE ROLE
   @PutMapping(
           path = "/{id}",
           consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -73,11 +74,12 @@ public class RoleController {
             .build();
   }
 
+  //  DELETE
   @DeleteMapping(
           path = "/{id}",
           produces = MediaType.APPLICATION_JSON_VALUE
   )
-  public WebResponse<RoleResponse> delete(@PathVariable("id") UUID id){
+  public WebResponse<RoleResponse> delete(@PathVariable("id") UUID id) {
     RoleResponse response = roleService.delete(id);
 
     return WebResponse.<RoleResponse>builder()
