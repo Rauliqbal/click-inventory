@@ -1,10 +1,13 @@
 package com.vensys.click_inventory.services;
 
+import com.vensys.click_inventory.DTO.LoginUserRequest;
+import com.vensys.click_inventory.DTO.UserResponse;
 import com.vensys.click_inventory.entity.Roles;
 import com.vensys.click_inventory.entity.Users;
 import com.vensys.click_inventory.DTO.RegisterUserRequest;
 import com.vensys.click_inventory.repositories.RoleRepository;
 import com.vensys.click_inventory.repositories.UserRepository;
+import com.vensys.click_inventory.utils.JwtUtil;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
@@ -27,6 +30,9 @@ public class UserService {
   private RoleRepository roleRepository;
 
   @Autowired
+  private JwtUtil jwtUtil;
+
+  @Autowired
   private Validator validator;
 
   @Transactional
@@ -39,6 +45,10 @@ public class UserService {
 
     if (userRepository.existsByUsername(request.getUsername())) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username udah ada");
+    }
+
+    if (userRepository.existsByEmail(request.getEmail())) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email udah ada");
     }
 
     Roles role = roleRepository.findByName(request.getRole())
@@ -56,4 +66,50 @@ public class UserService {
     userRepository.save(user);
     return user;
   }
+  
+  @Transactional
+  public String login(LoginUserRequest request) {
+    Set<ConstraintViolation<LoginUserRequest>> constraintViolations = validator.validate(request);
+
+    if(!constraintViolations.isEmpty()) {
+      throw new ConstraintViolationException(constraintViolations);
+    }
+
+    Users user = userRepository.findByUsername(request.getUsername())
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Username atau Password salah"));
+
+    if (!BCrypt.checkpw(request.getPassword(), user.getPassword())) {
+      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Username atau Password salah");
+    }
+
+    return jwtUtil.generateToken(request.getUsername());
+  }
+
+  @Transactional(readOnly = true)
+  public UserResponse getByUsername(String username) {
+    Users user = userRepository.findByUsername(username)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+    return UserResponse.builder()
+            .username(user.getUsername())
+            .fullname(user.getFullname())
+            .email(user.getEmail())
+            .role(user.getRole().getName())
+            .build();
+  }
+
+//  @Transactional(readOnly = true)
+//  public UserResponse get(String token) {
+//    String username = jwtUtil.extractUsername(token);
+//
+//    Users user = userRepository.findByUsername(username)
+//            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+//
+//    return UserResponse.builder()
+//            .username(user.getUsername())
+//            .fullname(user.getFullname())
+//            .email(user.getEmail())
+//            .role(user.getRole().getName())
+//            .build();
+//  }
 }
