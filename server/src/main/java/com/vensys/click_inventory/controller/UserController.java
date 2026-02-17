@@ -1,22 +1,18 @@
 package com.vensys.click_inventory.controller;
 
-import com.vensys.click_inventory.DTO.LoginUserRequest;
-import com.vensys.click_inventory.DTO.RegisterUserRequest;
-import com.vensys.click_inventory.DTO.UserResponse;
-import com.vensys.click_inventory.DTO.WebResponse;
+import com.vensys.click_inventory.DTO.*;
 import com.vensys.click_inventory.entity.Users;
 import com.vensys.click_inventory.services.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api")
@@ -30,7 +26,7 @@ public class UserController {
           consumes = MediaType.APPLICATION_JSON_VALUE,
           produces = MediaType.APPLICATION_JSON_VALUE
   )
-  public WebResponse<UserResponse> register(@RequestBody RegisterUserRequest request) {
+  public WebResponse<UserResponse> register(@RequestBody UserRequest request) {
     Users user = userService.register(request);
 
     UserResponse response = UserResponse.builder()
@@ -72,7 +68,28 @@ public class UserController {
             .build();
   }
 
-  //  GET USER
+  // LOGOUT
+  @PostMapping(
+          path = "/auth/logout",
+          produces = MediaType.APPLICATION_JSON_VALUE
+  )
+  public WebResponse<String> logout(HttpServletResponse response) {
+    Cookie cookie = new Cookie("ACCESS_TOKEN", null);
+
+    cookie.setHttpOnly(true);
+    cookie.setPath("/");
+    cookie.setMaxAge(0);
+
+    response.addCookie(cookie);
+
+    return WebResponse.<String>builder()
+            .success(true)
+            .message("Logout Success")
+            .data("OK")
+            .build();
+  }
+
+  // GET USER
   @GetMapping(
           path = "/user",
           produces = MediaType.APPLICATION_JSON_VALUE
@@ -88,6 +105,36 @@ public class UserController {
             .success(true)
             .message("Get user success")
             .data(userResponse)
+            .build();
+  }
+
+  // UPDATE USER
+  @PutMapping(
+          path = "/user/{id}",
+          consumes = MediaType.APPLICATION_JSON_VALUE,
+          produces = MediaType.APPLICATION_JSON_VALUE
+  )
+  public WebResponse<UserResponse> update(@PathVariable("id") UUID id, @RequestBody UserRequest request) {
+    UserResponse response = userService.update(id, request);
+
+    return WebResponse.<UserResponse>builder()
+            .success(true)
+            .message("Update " + response.getFullname() + " Successfully!")
+            .data(response)
+            .build();
+  }
+
+//  DELETE USER
+  @DeleteMapping(
+          path = "/user/{id}",
+          produces = MediaType.APPLICATION_JSON_VALUE
+  )
+  public WebResponse<RoleResponse> delete(@PathVariable("id") UUID id) {
+    UserResponse response = userService.delete(id);
+
+    return WebResponse.<RoleResponse>builder()
+            .success(true)
+            .message("Delete " + response.getFullname() + " Successfully!")
             .build();
   }
 }
