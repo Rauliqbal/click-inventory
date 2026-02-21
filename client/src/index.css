@@ -115,10 +115,23 @@
 }
 
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
+    * {
+        @apply border-border outline-ring/50;
     }
-  body {
-    @apply bg-background text-foreground;
+
+    body {
+        @apply bg-background text-foreground transition-all duration-300;
+    }
+}
+
+@layer components {
+    .input-field {
+        @apply px-4 py-2 rounded-md ring-1 ring-gray-300 outline-none focus:ring-primary
+    }
+}
+
+@layer utilities {
+    .title {
+        @apply text-3xl md:text-4xl font-semibold tracking-wide capitalize
     }
 }

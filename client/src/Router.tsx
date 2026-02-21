@@ -1,24 +1,22 @@
 import { Routes, Route } from 'react-router'
 import Home from './views/Home'
-import Login from './views/login'
-import DashboardLayout from './layouts/Dashboard'
+import DashboardLayout from './layouts/DashboardLayout'
+import Login from './views/Login'
+import ProtectedRoute from './middlewares/ProtectedRoute'
 
 export default function Router() {
     return (
         <div>
             <Routes>
-                {/* <Route element={<DashboardLayout />}>
-                    <Route path="/dashboard" element={<Dashboard />} />
-                    <Route path="/dashboard/users" element={<Users />} />
-                    <Route path="/dashboard/Service" element={<Service />} />
-                </Route> */}
-
-                <Route element={<DashboardLayout />}>
-                    <Route path="/" element={< Home />} />
+                <Route element={<ProtectedRoute type='private' />} >
+                    <Route element={<DashboardLayout />}>
+                        <Route path="/" element={< Home />} />
+                    </Route>
                 </Route>
 
-
-                <Route path="/login" element={<Login />} />
+                <Route element={<ProtectedRoute type='public' />} >
+                    <Route path="/login" element={<Login />} />
+                </Route>
                 {/* <Route path="/register" element={<Register />} /> */}
             </Routes>
         </div >
